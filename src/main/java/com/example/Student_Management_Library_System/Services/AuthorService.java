@@ -52,6 +52,7 @@ public AuthorResponseDto getAuthor(Integer authorId){
    authorResponseDto.setAge(author.getAge());
    authorResponseDto.setName(author.getName());
     authorResponseDto.setRating(author.getRating());
+    authorResponseDto.setCountry(author.getCountry());
   return authorResponseDto;
 }
 }

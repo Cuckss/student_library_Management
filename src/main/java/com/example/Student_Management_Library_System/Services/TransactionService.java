@@ -10,6 +10,8 @@ import com.example.Student_Management_Library_System.Repositories.BookRepository
 import com.example.Student_Management_Library_System.Repositories.CardRepository;
 import com.example.Student_Management_Library_System.Repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +25,8 @@ public class TransactionService {
     BookRepository bookRepository;
     @Autowired
     CardRepository cardRepository;
+    @Autowired
+    private JavaMailSender emailSender;
     public String issueBook(IssueBookRequestDto issueBookRequestDto) throws Exception{
       int bookId=issueBookRequestDto.getBookId();
       int cardId= issueBookRequestDto.getCardId();
@@ -72,6 +76,13 @@ public class TransactionService {
         //save the parent only
         cardRepository.save(card);
         //and automatically by cascading book and transaction will be saved
+        String text="Congrats!! "+card.getStudentVariableName().getName()+" you have been issued"+book.getName()+" book.";
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("librastudent123@gmail.com");
+        message.setTo(card.getStudentVariableName().getEmailId());
+        message.setSubject("Issue book notification");
+        message.setText(text);
+        emailSender.send(message);
         return"Book Issued Scuccessfully";
     }
     public String getTransactions(int bookId,int cardId){
